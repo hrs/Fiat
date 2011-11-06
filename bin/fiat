@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
+require 'fiat'
+
+instruction = "test"
+failing_words = ["Failed"]
+poll_interval = 0.5 # seconds
+
+if File.exists? ".fiatrc"
+  eval File.open(".fiatrc").read
+end
+
+instruction = ARGV.length == 1 ? ARGV[0] : instruction
+
+unless File.exists? "Makefile"
+  $stderr.puts "Can't run without a Makefile!"
+  exit false
+end
+
+unless Fiat::dep_tree.include? instruction
+  $stderr.puts "Can't find \"make #{instruction}\" in Makefile! Aborting."
+  exit false
+end
+
+puts "Running \"make #{instruction}\" on changes..."
+
+dependencies = Fiat::deps(instruction, Fiat::dep_tree)
+ctimes = Fiat::file_ctimes(dependencies)
+Fiat::run_tests(dependencies, ctimes, instruction)
+
+begin
+  while true
+    if Fiat::anything_changed?(dependencies, ctimes)
+      Fiat::run_tests(dependencies, ctimes, instruction)
+      ctimes = Fiat::file_ctimes(dependencies)
+    end
+    sleep poll_interval
+  end
+rescue SystemExit, Interrupt
+  puts "\nShutting down..."
+end
