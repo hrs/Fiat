@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Fiat::VERSION
   s.authors     = ["Harry Schwartz"]
   s.email       = ["hrs@cs.wm.edu"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/hrs/fiat"
   s.summary     = %q{The "auto-Maker."}
   s.description = %q{Autotest for Makefiles: fiat automatically and repeatedly executes a given make task every time one of the task's dependencies changes.}
 
