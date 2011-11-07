@@ -36,8 +36,8 @@ module Fiat
     ctimes != file_ctimes(filenames)
   end
 
-  def self.passed_tests?(result_string)
-    $failing_words.each do |f|
+  def self.passed_tests?(result_string, failure_terms)
+    failure_terms.each do |f|
       if result_string.include? f
         return false
       end
@@ -49,11 +49,11 @@ module Fiat
     process.exitstatus != 0
   end
 
-  def self.run_tests(dependencies, ctimes, instruction)
+  def self.run_tests(dependencies, ctimes, instruction, failure_terms)
     results = `make #{instruction}`
     puts results + "\n"
 
-    if crashed?($?) or not passed_tests?(results)
+    if crashed?($?) or not passed_tests?(results, failure_terms)
       puts ("#" * 40).red
     else
       puts ("#" * 40).green

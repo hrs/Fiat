@@ -4,7 +4,7 @@ $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 require 'fiat'
 
 instruction = "test"
-failing_words = ["Failed"]
+failure_terms = ["failed", "error"]
 poll_interval = 0.5 # seconds
 
 if File.exists? ".fiatrc"
@@ -27,12 +27,12 @@ puts "Running \"make #{instruction}\" on changes..."
 
 dependencies = Fiat::deps(instruction, Fiat::dep_tree)
 ctimes = Fiat::file_ctimes(dependencies)
-Fiat::run_tests(dependencies, ctimes, instruction)
+Fiat::run_tests(dependencies, ctimes, instruction, failure_terms)
 
 begin
   while true
     if Fiat::anything_changed?(dependencies, ctimes)
-      Fiat::run_tests(dependencies, ctimes, instruction)
+      Fiat::run_tests(dependencies, ctimes, instruction, failure_terms)
       ctimes = Fiat::file_ctimes(dependencies)
     end
     sleep poll_interval
