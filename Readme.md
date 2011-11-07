@@ -1,4 +1,4 @@
-## Fiat: the auto-`make`-er
+## Fiat: the auto-Make-er
 
 Fiat's a bit like [autotest](http://www.zenspider.com/ZSS/Products/ZenTest/) for `make`-managed projects.
 
@@ -37,7 +37,7 @@ Each time we save changes to `my_proj.c`, fiat will execute `make run` and print
 
 If the output of a task includes one of the defined key terms (`failure_terms`), fiat interprets that run to have been a failure and prints the end-of-run bar in red.
 
-## `.fiatrc`
+## .fiatrc
 
 In the same directory as the Makefile, we can optionally define a `.fiatrc` file which is interpreted when fiat is executed. In it we can set two variables:
 
