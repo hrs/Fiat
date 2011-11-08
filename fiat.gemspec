@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Harry Schwartz"]
   s.email       = ["hrs@cs.wm.edu"]
   s.homepage    = "https://github.com/hrs/fiat"
-  s.summary     = %q{The "auto-Maker."}
-  s.description = %q{Autotest for Makefiles: fiat automatically and repeatedly executes a given make task every time one of the task's dependencies changes.}
+  s.summary     = %q{The "auto-Make-er."}
+  s.description = %q{Like autotest for Makefiles: fiat automatically and repeatedly executes a given make task every time one of the task's dependencies is saved.}
 
   s.rubyforge_project = "fiat"
 
