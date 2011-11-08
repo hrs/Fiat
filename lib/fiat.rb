@@ -1,22 +1,23 @@
-require "fiat/version"
+require 'fiat/version'
 require 'colorize'
 
 module Fiat
   def self.dep_tree
     tree = {}
-    IO.readlines("Makefile").each do |line|
-      if line.include? ":"
-        k = line.split(":").first
-        line = line.split(":")[1..-1].join(":")
-        tree[k] = line.strip.split
-      end
+    task_headers = IO.readlines("Makefile").select{ |l| l.include? ":" }
+    
+    task_headers.each do |line|
+      k = line.split(":").first
+      reqs = line.split(":")[1..-1].join(":")
+      tree[k] = reqs.strip.split
     end
+    
     tree
   end
 
   def self.deps(key, tree)
     if tree.include? key
-      tree[key].map { |d| deps(d, tree) }.flatten.uniq
+      tree[key].map{ |d| deps(d, tree) }.flatten.uniq
     else
       key
     end
@@ -24,11 +25,12 @@ module Fiat
 
   def self.file_ctimes(filenames)
     hash = {}
-    filenames.each do |f|
-      if File.exists? f
+    real_files = filenames.select{ |f| File.exists? f }
+
+    real_files.each do |f|
         hash[f] = File.ctime(f)
-      end
     end
+    
     hash
   end
 
@@ -37,12 +39,7 @@ module Fiat
   end
 
   def self.passed_tests?(result_string, failure_terms)
-    failure_terms.each do |f|
-      if result_string.include? f
-        return false
-      end
-    end
-    true
+    failure_terms.select{ |term| result_string.include? term }.empty?
   end
 
   def self.crashed?(process)
@@ -53,10 +50,11 @@ module Fiat
     results = `make #{instruction}`
     puts results + "\n"
 
+    bar = "#" * 40
     if crashed?($?) or not passed_tests?(results, failure_terms)
-      puts ("#" * 40).red
+      puts bar.red
     else
-      puts ("#" * 40).green
+      puts bar.green
     end
   end
 end
