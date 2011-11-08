@@ -3,14 +3,17 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 require 'fiat'
 
+# Default values
 instruction = "test"
 failure_terms = ["failed", "error"]
 poll_interval = 0.5 # seconds
 
+# Overwrite the defaults if there's a .fiatrc in this directory
 if File.exists? ".fiatrc"
   eval File.open(".fiatrc").read
 end
 
+# Overwrite the instruction if one's given on the cmd line
 instruction = ARGV.length == 1 ? ARGV[0] : instruction
 
 unless File.exists? "Makefile"
@@ -27,8 +30,11 @@ puts "Running \"make #{instruction}\" on changes..."
 
 dependencies = Fiat::deps(instruction, Fiat::dep_tree)
 ctimes = Fiat::file_ctimes(dependencies)
+
+# Initial test run
 Fiat::run_tests(dependencies, ctimes, instruction, failure_terms)
 
+# Main loop
 begin
   while true
     if Fiat::anything_changed?(dependencies, ctimes)
