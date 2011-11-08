@@ -21,7 +21,7 @@ If you haven't installed any gems before, you *may* need to add rubygems' direct
 
 ## Usage
 
-	fiat [task]**
+	fiat [task]
 
 ## An Example
 
